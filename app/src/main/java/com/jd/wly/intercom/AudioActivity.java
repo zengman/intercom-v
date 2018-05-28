@@ -1,6 +1,11 @@
 package com.jd.wly.intercom;
 
 import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -51,6 +56,11 @@ public class AudioActivity extends Activity {
     private String level;
     private String master;
     public static final int EXPIRE_TIME = 20;
+    private LocationManager locationManager=null;
+    private LocationListener locationListener=null;
+    private TextView locationView=null;
+    private TextView infoView=null;
+
     private IntercomAdapter intercomAdapter;
 
     private AudioHandler audioHandler = new AudioHandler(this);
@@ -93,6 +103,9 @@ public class AudioActivity extends Activity {
                 setLevel("0");
             }
         });
+       infoView = (TextView)findViewById(R.id.tv_show);
+       locationView = (TextView)findViewById(R.id.gps_status);
+       locationManager_init();
     }
 
     private void initView() {
@@ -311,5 +324,44 @@ public class AudioActivity extends Activity {
 
     public List<IntercomUserBean> getUserBeanList() {
         return userBeanList;
+    }
+
+
+    /*locationManager初始化*/
+    void locationManager_init(){
+        locationManager =(LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationListener_init();
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0, locationListener);
+    }
+    /*locatonListener初始化*/
+    void locationListener_init(){
+        locationListener=new LocationListener(){
+            //位置变化时触发
+            public void onLocationChanged(Location location) {
+                //得到的数据---记录
+                locationView.setText("时间："+location.getTime()+"\n");
+                locationView.append("经度："+location.getLongitude()+"\n");
+                locationView.append("纬度："+location.getLatitude()+"\n");
+                locationView.append("海拔："+location.getAltitude()+"\n");
+            }
+            //gps禁用时触发
+            public void onProviderDisabled(String provider) {
+                infoView.setText("当前GPS状态：禁用\n");
+            }
+            //gps开启时触发
+            public void onProviderEnabled(String provider) {
+                infoView.setText("当前GPS状态：开启\n");
+            }
+            //gps状态变化时触发
+            public void onStatusChanged(String provider, int status,Bundle extras) {
+                if(status== LocationProvider.AVAILABLE){
+                    infoView.setText("当前GPS状态：可见的\n");
+                }else if(status==LocationProvider.OUT_OF_SERVICE){
+                    infoView.setText("当前GPS状态：服务区外\n");
+                }else if(status==LocationProvider.TEMPORARILY_UNAVAILABLE){
+                    infoView.setText("当前GPS状态：暂停服务\n");
+                }
+            }
+        };
     }
 }

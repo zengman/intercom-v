@@ -6,6 +6,18 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:padding="16dp">
+    <TextView
+        android:id="@+id/tv_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="43dp"/>
+
+    <TextView
+        android:id="@+id/gps_status"
+        android:layout_width="match_parent"
+        android:layout_height="111dp"
+        android:layout_below="@+id/tv_show"
+        android:layout_centerHorizontal="true" />
     <Button
         android:id="@+id/become_root_button"
         android:layout_width="match_parent"
@@ -18,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="74dp"
+        android:layout_marginTop="179dp"
         android:text="当前局域网的对讲机用户：\n（按住F2键即可对讲）"
         android:textSize="15sp" />
 
