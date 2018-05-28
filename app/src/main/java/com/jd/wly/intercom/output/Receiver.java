@@ -56,7 +56,10 @@ public class Receiver extends JobHandler {
             String str = new String(audioData);
 
             //sendMsg2MainThread(datagramPacket.getAddress().toString());
-            if(!datagramPacket.getAddress().toString().equals("/" + IPUtil.getLocalIPAddress())){
+
+            String pkt_addr = datagramPacket.getAddress().toString();
+            if(!pkt_addr.equals("/" + IPUtil.getLocalIPAddress())){
+                str = pkt_addr + "," + str;
                 sendMsg2MainThread(str);
 
 
@@ -70,7 +73,7 @@ public class Receiver extends JobHandler {
     private void sendMsg2MainThread(String content) {
         Message message = new Message();
         message.what = AudioHandler.AUDIO_OUTPUT;
-        message.obj = content;
+        message.obj = content; // 第一个是pkt ip， 第二个是message内容
         handler.sendMessage(message);
     }
 
