@@ -47,7 +47,7 @@ public class AudioActivity extends Activity {
     private TextView currentIp;
 
     private List<IntercomUserBean> userBeanList = new ArrayList<>();
-    private List<String> userBeanAddressList = new ArrayList<>();
+
     private String level;
     private String master;
     public static final int EXPIRE_TIME = 20;
@@ -104,11 +104,12 @@ public class AudioActivity extends Activity {
         intercomAdapter = new IntercomAdapter(userBeanList);
         localNetworkUser.setAdapter(intercomAdapter);
         // 设置当前IP地址
-        currentIp = (TextView) findViewById(R.id.activity_audio_current_ip);
-        String ip = "当前IP地址为：" + IPUtil.getLocalIPAddress() + "(-1)";
-        currentIp.setText(ip);
-        level = "-1";
+        level = "0";
         master = "null";
+        currentIp = (TextView) findViewById(R.id.activity_audio_current_ip);
+        String ip = "当前IP地址为：" + IPUtil.getLocalIPAddress() + "("+level+")";
+        currentIp.setText(ip);
+
     }
 
     /**
@@ -135,7 +136,7 @@ public class AudioActivity extends Activity {
 
         // 初始化并启动放音线程
         audioOutput = new AudioOutput(audioHandler);
-        outputService.execute(audioOutput);
+        //outputService.execute(audioOutput);
     }
 
     @Override
@@ -149,9 +150,9 @@ public class AudioActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-   // @Override
+//    @Override
 //    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        if ((keyCode == KeyEvent.KEYCODE_F2 ||
+//        if ((keyCode == KeyEvent.KEYCODE_F1 ||
 //                keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
 //                && audioInput.isRecording()) {
 //            stopRec();
@@ -164,7 +165,7 @@ public class AudioActivity extends Activity {
     public void transfer(String content){
 
         for(IntercomUserBean userBean: userBeanList){
-            if(Integer.valueOf(level) == Integer.valueOf(userBean.getLevel()) - 1 ){
+            if(Integer.valueOf(userBean.getLevel()) == 1 ){
                 Log.d("转发消息", "tranfer content : " + content + " to "+ userBean.getIpAddress());
                 transfer.update(content.getBytes(), userBean.getIpAddress());
                 inputService.execute(transfer);

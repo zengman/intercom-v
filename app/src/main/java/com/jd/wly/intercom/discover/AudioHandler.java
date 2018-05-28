@@ -65,15 +65,12 @@ public class AudioHandler extends Handler {
 
                 activity.toast("receive level="+temp[1]+", master ="+ temp[2]);
             } else if (msg.what == AUDIO_OUTPUT) {
-                String [] tmp = content.split(",");
-                if(tmp[0].equals(activity.getMaster())){
-                    content = tmp[1];
-                    activity.toast(content);
-                    Log.d("收到消息", "start transfer");
-                    activity.transfer("transfer mes "+content);
-                    Log.d("收到消息", "end transfer");
-                }
-                Log.d("收到消息", "收到不是master的消息:" + tmp[1]);
+
+               // activity.toast(content);
+                Log.d("收到消息", "start transfer");
+                activity.transfer("transfer mes "+content);
+                Log.d("收到消息", "end transfer");
+
 
 
             }

@@ -1,17 +1,25 @@
 package com.jd.wly.intercom.output;
 
+import android.location.LocationProvider;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.jd.wly.intercom.discover.AudioHandler;
 import com.jd.wly.intercom.job.JobHandler;
 import com.jd.wly.intercom.util.Constants;
 import com.jd.wly.intercom.util.IPUtil;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
@@ -24,9 +32,10 @@ public class Receiver extends JobHandler {
     private Handler handler;
 
     // 组播Socket
-    private MulticastSocket multicastSocket;
+    private Socket socket;
     // IPV4地址
     private InetAddress group;
+    private static int socket_timeout = 10000;
 
     public Receiver() {
 
@@ -39,31 +48,37 @@ public class Receiver extends JobHandler {
 
     private void initMulticastNetwork() {
         try {
-            group = InetAddress.getByName(Constants.MULTI_BROADCAST_IP);
-            multicastSocket = new MulticastSocket(Constants.MULTI_BROADCAST_PORT);
-            multicastSocket.joinGroup(group);
-        } catch (IOException e) {
-            e.printStackTrace();
+            group = InetAddress.getByName(Constants.REQUEST_DATA_IP);
+            socket = new Socket(group, Constants.REQUEST_DATA_PORT);
+            socket.setSoTimeout(socket_timeout);
+        }catch (Exception e){
+                e.printStackTrace();
         }
+
     }
 
     @Override
     public void handleRequest(byte[] audioData) {
         audioData = new byte[2048];
-        DatagramPacket datagramPacket = new DatagramPacket(audioData, audioData.length);
+        String str = null;
+        String result = new String();
+        BufferedReader is=null;
+
         try {
-            multicastSocket.receive(datagramPacket);
-            String str = new String(audioData);
+            socket = new Socket(group, Constants.REQUEST_DATA_PORT);
+            socket.setSoTimeout(socket_timeout);
+            is = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            int temp = 0;
+            while((temp = is.read() )!= -1){
+                //System.out.println(str);//此时str就保存了一行字符串
+                str += result;
+            }
 
+            is.close();
+            Log.d("收到服务端数据","receive :"+str);
             //sendMsg2MainThread(datagramPacket.getAddress().toString());
+            sendMsg2MainThread(str);
 
-            String pkt_addr = datagramPacket.getAddress().toString();
-            if(!pkt_addr.equals("/" + IPUtil.getLocalIPAddress())){
-                str = pkt_addr + "," + str;
-                sendMsg2MainThread(str);
-
-
-            };
            // getNextJobHandler().handleRequest(audioData);
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,13 +88,17 @@ public class Receiver extends JobHandler {
     private void sendMsg2MainThread(String content) {
         Message message = new Message();
         message.what = AudioHandler.AUDIO_OUTPUT;
-        message.obj = content; // 第一个是pkt ip， 第二个是message内容
+        message.obj = content; // message内容
         handler.sendMessage(message);
     }
 
     @Override
     public void free() {
         super.free();
-        multicastSocket.close();
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -24,7 +24,7 @@ public class AudioInput implements Runnable {
         initJobHandler();
     }
     public void  sendMessage(){
-        String str = "Hello";
+        String str = "request for data";
         byte[] srtbyte = str.getBytes();
         sender.handleRequest(srtbyte);
     }

@@ -18,6 +18,10 @@ public class Constants {
 
     // 子网广播端口
     public static final int BROADCAST_PORT = 10000;
+    // 请求卫星数据端口
+    public static final int REQUEST_DATA_PORT = 8888;
+    //请求卫星数据的server ip
+    public static final String  REQUEST_DATA_IP = "192.168.31.107";
 
     // 采样频率：8KHZ
     public static final int sampleRateInHz = 8000;
