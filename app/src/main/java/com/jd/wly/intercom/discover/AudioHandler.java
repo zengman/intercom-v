@@ -1,12 +1,18 @@
 package com.jd.wly.intercom.discover;
 
+import android.location.LocationProvider;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.jd.wly.intercom.AudioActivity;
 import com.jd.wly.intercom.users.IntercomUserBean;
+import com.jd.wly.intercom.users.Statellite;
+import com.jd.wly.intercom.util.Constants;
 import com.jd.wly.intercom.util.IPUtil;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.sql.Time;
@@ -65,7 +71,8 @@ public class AudioHandler extends Handler {
 
                 activity.toast("receive level="+temp[1]+", master ="+ temp[2]);
             } else if (msg.what == AUDIO_OUTPUT) {
-
+                //收到来自服务器的消息
+                handleHttpData(content);
                // activity.toast(content);
                 Log.d("收到消息", "start transfer");
                 activity.transfer("transfer mes "+content);
@@ -107,6 +114,48 @@ public class AudioHandler extends Handler {
 
         }
     }
+
+    public void handleHttpData(String responseStr){
+        try {
+            AudioActivity activity = activityWeakReference.get();
+            JSONObject responseJsonObj = new JSONObject(responseStr);
+            String time = responseJsonObj.get("time").toString();
+            String [] tmp = time.split(" ");
+            time = tmp[1]; // 取周内秒
+            activity.statellite_time = Long.valueOf(time);
+            int length = Integer.valueOf(responseJsonObj.get("cnt").toString());
+            for(int i = 0; i< length; i++){
+
+                JSONObject g = (JSONObject) responseJsonObj.get("G"+String.valueOf(i+1));
+                Statellite statellite = new Statellite();
+
+                String drm = g.get("pseudorange_Corrections").toString();
+                String time_ratio = g.get("ratio_pseudorange_Corrections").toString();
+                String x = g.get("X").toString();
+                String y = g.get("Y").toString();
+                String z = g.get("Z").toString();
+                String number = g.get("number").toString();
+
+
+                statellite.setTime_ratio(Double.valueOf(time_ratio));
+                statellite.setDrm(Double.valueOf(drm));
+                statellite.setX(Double.valueOf(x));
+                statellite.setY(Double.valueOf(y));
+                statellite.setZ(Double.valueOf(z));
+                statellite.setNumber(number);
+
+                activity.gSet[i] = statellite;
+
+            }
+
+            Log.d("收到http回复", time.toString());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 //    public void handleGetIntercomUserBeanLIst(){
 //        AudioActivity activity = activityWeakReference.get();

@@ -11,6 +11,7 @@ import com.jd.wly.intercom.util.Constants;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -90,6 +91,7 @@ public class Sender extends JobHandler {
                 int responseCode=httpURLConnection.getResponseCode();
                 int len = 0;
                 byte[] data=new byte[2048];
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 if(responseCode==200)
                 {
                     //getInputStream获取服务端返回的数据流。
@@ -97,10 +99,14 @@ public class Sender extends JobHandler {
                     while((len=inputStream.read(data))!=-1)
                     {
                         //向本地文件中写入图片流
-                        String receive = new String(data);
-                        Log.d("http data :", receive);
-                        sendMsg2MainThread(receive);
+                        baos.write(data,0,len);
+
                     }
+                    inputStream.close();
+                    String receive = baos.toString();
+                    baos.close();
+                    Log.d("http data :", receive);
+                    sendMsg2MainThread(receive);
                 }
 
             }

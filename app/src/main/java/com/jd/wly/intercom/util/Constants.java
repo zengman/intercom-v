@@ -21,8 +21,8 @@ public class Constants {
     // 请求卫星数据端口
     public static final int REQUEST_DATA_PORT = 8888;
     //请求卫星数据的server ip
-    public static final String  REQUEST_DATA_IP = "192.168.31.107";
-
+    public static final String  REQUEST_DATA_IP = "172.20.10.3";
+    public static final int STATELLITE_NUMBER = 32;
     // 采样频率：8KHZ
     public static final int sampleRateInHz = 8000;
     // 音频数据格式:PCM 16位每个样本，保证设备支持。

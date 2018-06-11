@@ -6,29 +6,58 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:padding="16dp">
-    <Button
-        android:id="@+id/become_root_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Become root"/>
 
     <TextView
-        android:id="@+id/activity_audio_local_network_user_tv"
+        android:id="@+id/tv_show"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="74dp"
-        android:text="当前局域网的对讲机用户：\n（按住F2键即可对讲）"
-        android:textSize="15sp" />
+        android:layout_marginTop="19dp" />
+
+    <TextView
+        android:id="@+id/gps_status"
+        android:layout_width="match_parent"
+        android:layout_height="165dp"
+        android:layout_below="@+id/tv_show"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/tv_nmea"
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="200dp" />
+    <!--<Button-->
+        <!--android:id="@+id/become_root_button"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Become root"/>-->
+    <TextView
+        android:id="@+id/show_gpgsv_info"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="127dp" />
+    <!--<TextView-->
+        <!--android:id="@+id/activity_audio_local_network_user_tv"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="216dp"-->
+        <!--android:text="当前局域网的对讲机用户：\n（按住F2键即可对讲）"-->
+        <!--android:textSize="15sp" />-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_audio_local_network_user_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="67dp"
         android:layout_below="@+id/activity_audio_local_network_user_tv"
         android:layout_marginBottom="25dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="148dp"
         app:layoutManager="LinearLayoutManager">
 
     </android.support.v7.widget.RecyclerView>
